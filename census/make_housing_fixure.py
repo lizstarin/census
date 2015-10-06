@@ -22,6 +22,7 @@ for i, l in enumerate(data, start=1):
 	fixture_json.append({
 			"model": "map.housingunits",
 			"pk": i,
+			"zipcode_id": i,
 			"fields": {
 				"total": l[0],
 				"occupied": l[1],

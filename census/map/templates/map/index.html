@@ -1,0 +1,10 @@
+<ul>
+{% for k,v in zips.items %}
+    <li>
+    	<b>{{ k }}</b>
+    {% for l, w in v.items %}
+    	{{ l }} : {{ w }},
+    {% endfor %}
+	</li>
+{% endfor %}
+</ul>
