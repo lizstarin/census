@@ -1,4 +1,4 @@
-{% for k,v in zips.items %}
+<!-- {% for k,v in zips.items %}
     <p>
     	<b>{{ k }}</b>
     {% for l, w in v.items %}
@@ -7,3 +7,46 @@
 	</p>
 {% endfor %}
 
+ -->
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+/* CSS goes here. */
+
+</style>
+<body>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script>
+		var width = 1000,
+		    height = 670;
+
+		var svg = d3.select("body").append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+		var projection = d3.geo.albers()
+		    .center([-75.3, 43.1])
+		    .rotate([0, 0, 0])
+		    .parallels([38, 48])
+		    .scale(8000)
+		    .translate([width / 6, height / 1.2]);
+
+		var path = d3.geo.path()
+    		.projection(projection);
+
+		d3.json("/static/New_York.topo.json", function(error, ny) {
+			if (error) return console.error(error);
+
+			svg.selectAll(".zipcode")
+			    .data(topojson.feature(ny, ny.objects["New_York.geo"]).features)
+				.enter().append("path")
+			    	.attr("class", function(d) { return "zipcode " + d.id; })
+			    	.attr("d", path)
+			    	.attr("transform", function() { return "rotate(-45)" });
+
+		});
+	</script>
+</body>
