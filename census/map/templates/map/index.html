@@ -1,27 +1,13 @@
-<!-- {% for k,v in zips.items %}
-    <p>
-    	<b>{{ k }}</b>
-    {% for l, w in v.items %}
-    	{{ l }} : {{ w }},
-    {% endfor %}
-	</p>
-{% endfor %}
+{% load filters %}
 
- -->
-
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-
-/* CSS goes here. */
-
-</style>
-<body>
+<div id="map-container">
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="http://d3js.org/topojson.v1.min.js"></script>
 	<script>
 		var width = 1000,
 		    height = 670;
+
+		var body = d3.select("body");
 
 		var svg = d3.select("body").append("svg")
 		    .attr("width", width)
@@ -43,10 +29,44 @@
 			svg.selectAll(".zipcode")
 			    .data(topojson.feature(ny, ny.objects["New_York.geo"]).features)
 				.enter().append("path")
-			    	.attr("class", function(d) { return "zipcode " + d.id; })
+			    	.attr("class", function(d) { return "zipcode _" + d.id; })
 			    	.attr("d", path)
-			    	.attr("transform", function() { return "rotate(-45)" });
+			    	.attr("transform", function() { return "rotate(-45)" })
+			    	.on("mouseover", function(d) {
+			    		body.select(".tooltip._" + d.id)
+			    			.style("opacity", .9);
+			    	})
+			    	.on("mouseout", function(d) {
+			    		body.select(".tooltip._" + d.id)
+			    			.style("opacity", 0);
+			    	});
 
 		});
+
 	</script>
-</body>
+</div>
+
+{% for k,v in zips.items %}
+	<div class="tooltip _{{ k }}">
+		<div class="tooltip-heading">{{ k }}</div>
+		<div class="units">units: {{ v.total }}</div>
+		<div class="vacancy-rate">vacancy rate: {{ v.vacant|divide:v.total|multiply:100 }}%</div>
+	</div>
+{% endfor %}
+
+
+<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+<style>
+	{% for k,v in zips.items %}
+		.zipcode._{{ k }} {
+			opacity: {{ v.vacant|divide:v.total }};
+		}
+
+		.tooltip._{{ k }} {
+
+		}
+	{% endfor %}
+</style>
+
+
+
